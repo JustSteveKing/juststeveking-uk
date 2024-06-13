@@ -40,4 +40,9 @@ return [
         'model' => env('OLLAMA_MODEL', 'llama3'),
     ],
 
+    'youtube' => [
+        'url' => env('YOUTUBE_URL', 'https://www.youtube.com/watch?v='),
+        'token' => env('YOUTUBE_API_KEY', null),
+    ],
+
 ];
