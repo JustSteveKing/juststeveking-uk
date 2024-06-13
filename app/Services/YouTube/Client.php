@@ -1,10 +1,7 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\YouTube;
 
-use App\Services\YouTube\ChannelData;
-use App\Services\YouTube\StreamData;
-use App\Services\YouTube\YouTubeException;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
@@ -13,18 +10,19 @@ class Client
 {
     public function channel(string $id): ChannelData
     {
-        return $this->channels($id)
-            ->whenEmpty(fn () => throw YouTubeException::unknownChannel($id))
-            ->first();
+        return $this->channels([$id])->whenEmpty(
+            callback: fn () => throw YouTubeException::unknownChannel($id),
+        )->first();
     }
 
     public function channels(iterable|string $channelIds): Collection
     {
-        return Http::youtube('channels', [
+        return Http::youtube('/channels', [
             /** @phpstan-ignore-next-line   */
             'id' => collect($channelIds)->implode(','),
             'part' => 'snippet',
         ], 'items')->map(fn (array $item) => new ChannelData(
+            title: 'test',
             platformId: data_get($item, 'id'),
             youTubeCustomUrl: data_get($item, 'snippet.customUrl', ''),
             name: data_get($item, 'snippet.title'),
@@ -35,11 +33,11 @@ class Client
         ));
     }
 
-    public function upcomingStreams(string $channelId): Collection
+    public function streams(string $channelId): Collection
     {
         return Http::youtube('search', [
             'channelId' => $channelId,
-            'eventType' => 'upcoming',
+            'eventType' => 'completed',
             'type' => 'video',
             'part' => 'id',
             'maxResults' => 25,
@@ -58,7 +56,7 @@ class Client
         return Http::youtube('videos', [
             /** @phpstan-ignore-next-line   */
             'id' => collect($videoIds)->implode(','),
-            'part' => 'snippet,statistics,liveStreamingDetails',
+            'part' => 'snippet,statistics,liveStreamingDetails,contentDetails',
         ], 'items')
             ->map(fn (array $youTubeVideoDetails) => new StreamData(
                 videoId: data_get($youTubeVideoDetails, 'id'),

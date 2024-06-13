@@ -37,7 +37,7 @@ final class AppServiceProvider extends ServiceProvider
             /** @var Factory $this */
             return $this
                 ->asJson()
-                ->baseUrl('https://youtube.googleapis.com/youtube/v3/')
+                ->baseUrl('https://youtube.googleapis.com/youtube/v3')
                 ->get($url, array_merge($params, [
                     'key' => config('services.youtube.key'),
                 ]))

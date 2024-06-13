@@ -42,7 +42,8 @@ return [
 
     'youtube' => [
         'url' => env('YOUTUBE_URL', 'https://www.youtube.com/watch?v='),
-        'token' => env('YOUTUBE_API_KEY', null),
+        'key' => env('YOUTUBE_API_KEY', null),
+        'channel' => env('YOUTUBE_CHANNEL_ID', null),
     ],
 
 ];

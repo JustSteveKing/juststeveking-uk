@@ -28,24 +28,22 @@ final class StreamData
         public ?Carbon $actualStartTime,
         public ?Carbon $actualEndTime,
         public string $status,
-    ) {}
+    ) {
+    }
 
-    public static function fake(): StreamData
+    public function toArray(): array
     {
-        return new self(
-            array_merge([
-                'title' => 'My Test Stream',
-                'channelId' => '1234',
-                'channelTitle' => 'My Channel Name',
-                'description' => 'Some description',
-                'thumbnailUrl' => 'my-new-thumbnail-url',
-                'publishedAt' => Carbon::tomorrow(),
-                'plannedStart' => Carbon::tomorrow(),
-                'actualStartTime' => Carbon::tomorrow(),
-                'actualEndTime' => Carbon::tomorrow()->addHour(),
-                'status' => static::STATUS_UPCOMING,
-            ], $args)
-        );
+        return [
+            'youtube' => $this->videoId,
+            'title' => $this->title,
+            'channel' => $this->channelTitle,
+            'thumbnail' => $this->thumbnailUrl,
+            'status' => $this->status,
+            'description' => $this->description,
+            'published_at' => $this->publishedAt,
+            'actual_start_time' => $this->actualStartTime,
+            'actual_end_time' => $this->actualEndTime,
+        ];
     }
 
     public function isLive(): bool
